@@ -1,30 +1,34 @@
 using ErrorOr;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebPortal.Application.Services.Authentication;
+using WebPortal.Application.Authentication.Commands.Register;
+using WebPortal.Application.Authentication.Common;
+using WebPortal.Application.Authentication.Queries.Login;
 using WebPortal.Contracts.Authentication;
 using WebPortal.Domain.Common.Errors;
 namespace WebPortal.Api.Controllers;
 
-
 [Route("auth")]
 public class AuthenticationController : ApiController
 {
-  private readonly IAuthenticationService authenticationService;
+  private readonly ISender mediator;
 
-  public AuthenticationController(IAuthenticationService authenticationService)
+  public AuthenticationController(ISender mediator)
   {
-    this.authenticationService = authenticationService;
+    this.mediator = mediator;
   }
 
   [HttpPost("register")]
-  public IActionResult Register(RegisterRequest request)
+  public async Task<IActionResult> Register(RegisterRequest request)
   {
-    ErrorOr<AuthenticationResult> authResult = authenticationService.Register(
+    var command = new RegisterCommand(
       request.FirstName,
       request.LastName,
       request.Email,
       request.Password
     );
+
+    ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
 
     return authResult.Match(
       authResult => Ok(MapAuthResult(authResult)),
@@ -33,12 +37,11 @@ public class AuthenticationController : ApiController
   }
 
   [HttpPost("login")]
-  public IActionResult Login(LoginRequest request)
+  public async Task<IActionResult> Login(LoginRequest request)
   {
-    ErrorOr<AuthenticationResult> authResult = authenticationService.Login(
-      request.Email,
-      request.Password
-    );
+    var query = new LoginQuery(request.Email, request.Password);
+
+    ErrorOr<AuthenticationResult> authResult = await mediator.Send(query);
 
     if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
     {
