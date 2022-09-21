@@ -1,4 +1,5 @@
 using ErrorOr;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebPortal.Application.Authentication.Commands.Register;
@@ -12,26 +13,23 @@ namespace WebPortal.Api.Controllers;
 public class AuthenticationController : ApiController
 {
   private readonly ISender mediator;
+  private readonly IMapper mapper;
 
-  public AuthenticationController(ISender mediator)
+  public AuthenticationController(ISender mediator, IMapper mapper)
   {
     this.mediator = mediator;
+    this.mapper = mapper;
   }
 
   [HttpPost("register")]
   public async Task<IActionResult> Register(RegisterRequest request)
   {
-    var command = new RegisterCommand(
-      request.FirstName,
-      request.LastName,
-      request.Email,
-      request.Password
-    );
+    var registerCommand = mapper.Map<RegisterCommand>(request);
 
-    ErrorOr<AuthenticationResult> authResult = await mediator.Send(command);
+    ErrorOr<AuthenticationResult> registerCommandResult = await mediator.Send(registerCommand);
 
-    return authResult.Match(
-      authResult => Ok(MapAuthResult(authResult)),
+    return registerCommandResult.Match(
+      result => Ok(mapper.Map<AuthenticationResponse>(result)),
       errors => Problem(errors)
     );
   }
@@ -39,32 +37,21 @@ public class AuthenticationController : ApiController
   [HttpPost("login")]
   public async Task<IActionResult> Login(LoginRequest request)
   {
-    var query = new LoginQuery(request.Email, request.Password);
+    var loginQuery = mapper.Map<LoginQuery>(request);
 
-    ErrorOr<AuthenticationResult> authResult = await mediator.Send(query);
+    ErrorOr<AuthenticationResult> loginQueryResult = await mediator.Send(loginQuery);
 
-    if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
+    if (loginQueryResult.IsError && loginQueryResult.FirstError == Errors.Authentication.InvalidCredentials)
     {
       return Problem(
         statusCode: StatusCodes.Status401Unauthorized,
-        title: authResult.FirstError.Description
+        title: loginQueryResult.FirstError.Description
       );
     }
 
-    return authResult.Match(
-      authResult => Ok(MapAuthResult(authResult)),
+    return loginQueryResult.Match(
+      result => Ok(mapper.Map<AuthenticationResponse>(result)),
       errors => Problem(errors)
     );
-  }
-
-  private static AuthenticationResponse MapAuthResult(AuthenticationResult authResult)
-  {
-    return new AuthenticationResponse(
-          authResult.User.Id,
-          authResult.User.FirstName,
-          authResult.User.LastName,
-          authResult.User.Email,
-          authResult.Token
-        );
   }
 }
