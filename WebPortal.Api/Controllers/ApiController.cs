@@ -1,10 +1,13 @@
 using ErrorOr;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace WebPortal.Api.Controllers;
 
 [ApiController]
+[Route("api/[controller]")]
+[Authorize]
 public class ApiController : ControllerBase
 {
   protected IActionResult Problem(List<Error> errors)

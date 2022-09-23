@@ -1,6 +1,7 @@
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebPortal.Application.Authentication.Commands.Register;
 using WebPortal.Application.Authentication.Common;
@@ -9,7 +10,8 @@ using WebPortal.Contracts.Authentication;
 using WebPortal.Domain.Common.Errors;
 namespace WebPortal.Api.Controllers;
 
-[Route("auth")]
+[Route("api/auth")]
+[AllowAnonymous]
 public class AuthenticationController : ApiController
 {
   private readonly ISender mediator;

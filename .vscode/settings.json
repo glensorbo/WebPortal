@@ -4,10 +4,12 @@
       
     },
     "dev": {
-      "host": "https://localhost:7140"
+      "host": "https://localhost:7140/api",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzM2I0MTY0My1iNWVjLTQ0NDctOWZiMi0wNDIzYTAxOWQ1ZmYiLCJnaXZlbl9uYW1lIjoiR2xlbiIsImZhbWlseV9uYW1lIjoiU8O4cmLDuCIsImp0aSI6IjZkOGRmZTg4LTNhMmQtNGI5MS1iNzFmLTYyMzliNWI0MmMzNSIsImV4cCI6MTY2Mzk3NDQzNywiaXNzIjoiV2ViUG9ydGFsIiwiYXVkIjoiV2ViUG9ydGFsIn0.1rXa3TTcNq4-tfAjBGykd9ZS4v2wjQl1cuQcYLl6MIM"
     },
     "prod": {
-      "host": "https://localhost:7140"
+      "host": "https://localhost:7140/api",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzM2I0MTY0My1iNWVjLTQ0NDctOWZiMi0wNDIzYTAxOWQ1ZmYiLCJnaXZlbl9uYW1lIjoiR2xlbiIsImZhbWlseV9uYW1lIjoiU8O4cmLDuCIsImp0aSI6IjZkOGRmZTg4LTNhMmQtNGI5MS1iNzFmLTYyMzliNWI0MmMzNSIsImV4cCI6MTY2Mzk3NDQzNywiaXNzIjoiV2ViUG9ydGFsIiwiYXVkIjoiV2ViUG9ydGFsIn0.1rXa3TTcNq4-tfAjBGykd9ZS4v2wjQl1cuQcYLl6MIM"
     }
   },
   "cSpell.words": [
